@@ -3,15 +3,15 @@ use std::io::{Read, stdin, stdout, Write};
 
 const BLOCK_SIZE: usize = 30000;
 
-pub fn run(code: String) {
+pub fn is_valid_brainfuck(code: &String) -> bool {
     let instructions: Vec<char> = code.chars().collect();
     let loop_start_count = instructions.iter().filter(|&&c| c == '[').count();
     let loop_end_count = instructions.iter().filter(|&&c| c == ']').count();
-    if loop_start_count != loop_end_count {
-        println!("Error: Mismatching brackets detected");
-        return;
-    }
+    loop_start_count == loop_end_count
+}
 
+pub fn run(code: &String) {
+    let instructions: Vec<char> = code.chars().collect();
     let mut cursor: usize = 0;
     let mut cells: [u8; BLOCK_SIZE] = [0; BLOCK_SIZE];
     let mut position: usize = 0;
