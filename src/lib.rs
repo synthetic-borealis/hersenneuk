@@ -1,7 +1,18 @@
 use std::collections::VecDeque;
 use std::io::{Read, stdin, stdout, Write};
+use regex::{Regex};
 
 const BLOCK_SIZE: usize = 30000;
+
+pub fn strip_comments(code: &String) -> String {
+    let re = Regex::new(r"/{2,}[^\r^\n]*").unwrap();
+    re.replace_all(code.as_str(), "").to_string()
+}
+
+pub fn clean_code(code: &String) -> String {
+    let re = Regex::new(r"[^<>+\-,.\[\]]*").unwrap();
+    re.replace_all(code.as_str(), "").to_string()
+}
 
 pub fn is_valid_brainfuck(code: &String) -> bool {
     let instructions: Vec<char> = code.chars().collect();
