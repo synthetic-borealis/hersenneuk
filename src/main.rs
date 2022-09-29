@@ -18,7 +18,7 @@ fn main() {
     let mut source_code = fs::read_to_string(source_file).expect("Could not read input file!");
     source_code = code_cleanup::clean_code(&code_cleanup::strip_comments(&source_code));
 
-    if syntax_checking::is_valid_brainfuck(&source_code) {
+    if !syntax_checking::has_mismatching_loop_bounds(&source_code) {
         interpreter::run(&source_code);
     } else {
         println!("Oh noes :'(");
