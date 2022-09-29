@@ -1,27 +1,27 @@
+use regex::Regex;
 use std::collections::VecDeque;
-use std::io::{Read, stdin, stdout, Write};
-use regex::{Regex};
+use std::io::{stdin, stdout, Read, Write};
 
 const BLOCK_SIZE: usize = 30000;
 
-pub fn strip_comments(code: &String) -> String {
+pub fn strip_comments(code: &str) -> String {
     let re = Regex::new(r"/{2,}[^\r^\n]*").unwrap();
-    re.replace_all(code.as_str(), "").to_string()
+    re.replace_all(code, "").to_string()
 }
 
-pub fn clean_code(code: &String) -> String {
+pub fn clean_code(code: &str) -> String {
     let re = Regex::new(r"[^<>+\-,.\[\]]*").unwrap();
-    re.replace_all(code.as_str(), "").to_string()
+    re.replace_all(code, "").to_string()
 }
 
-pub fn is_valid_brainfuck(code: &String) -> bool {
+pub fn is_valid_brainfuck(code: &str) -> bool {
     let instructions: Vec<char> = code.chars().collect();
     let loop_start_count = instructions.iter().filter(|&&c| c == '[').count();
     let loop_end_count = instructions.iter().filter(|&&c| c == ']').count();
     loop_start_count == loop_end_count
 }
 
-pub fn run(code: &String) {
+pub fn run(code: &str) {
     let instructions: Vec<char> = code.chars().collect();
     let mut cursor: usize = 0;
     let mut cells: [u8; BLOCK_SIZE] = [0; BLOCK_SIZE];
@@ -30,24 +30,32 @@ pub fn run(code: &String) {
 
     while cursor < instructions.len() {
         match instructions[cursor] {
-            '<' => if position > 0 {
-                position -= 1;
-            },
-            '>' => if position < BLOCK_SIZE - 1 {
-                position += 1;
-            },
-            '-' => if cells[position] > 0 {
-                cells[position] -= 1;
-            },
-            '+' => if cells[position] < 255 {
-                cells[position] += 1;
-            },
+            '<' => {
+                if position > 0 {
+                    position -= 1;
+                }
+            }
+            '>' => {
+                if position < BLOCK_SIZE - 1 {
+                    position += 1;
+                }
+            }
+            '-' => {
+                if cells[position] > 0 {
+                    cells[position] -= 1;
+                }
+            }
+            '+' => {
+                if cells[position] < 255 {
+                    cells[position] += 1;
+                }
+            }
             ',' => {
                 cells[position] = get_char() as u8;
-            },
+            }
             '.' => {
                 put_char(cells[position] as char);
-            },
+            }
             '[' => {
                 if cells[position] != 0 {
                     loop_positions.push_back(cursor);
@@ -64,13 +72,15 @@ pub fn run(code: &String) {
                     }
                     cursor -= 1;
                 }
-            },
-            ']' => if cells[position] != 0 {
-                cursor = *loop_positions.back().unwrap();
-            } else {
-                loop_positions.pop_back();
-            },
-            _ => {},
+            }
+            ']' => {
+                if cells[position] != 0 {
+                    cursor = *loop_positions.back().unwrap();
+                } else {
+                    loop_positions.pop_back();
+                }
+            }
+            _ => {}
         }
         cursor += 1;
     }
@@ -78,7 +88,7 @@ pub fn run(code: &String) {
 
 fn put_char(c: char) {
     let buf: [u8; 1] = [c as u8];
-    stdout().write(&buf).unwrap();
+    stdout().write_all(&buf).unwrap();
 }
 
 fn get_char() -> char {
