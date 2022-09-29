@@ -1,4 +1,4 @@
-use hersenneuk::{clean_code, is_valid_brainfuck, run, strip_comments};
+use hersenneuk::{code_cleanup, interpreter, syntax_checking};
 use std::{env, fs, process};
 
 fn main() {
@@ -16,10 +16,10 @@ fn main() {
 
     let source_file = args.remove(0);
     let mut source_code = fs::read_to_string(source_file).expect("Could not read input file!");
-    source_code = clean_code(&strip_comments(&source_code));
+    source_code = code_cleanup::clean_code(&code_cleanup::strip_comments(&source_code));
 
-    if is_valid_brainfuck(&source_code) {
-        run(&source_code);
+    if syntax_checking::is_valid_brainfuck(&source_code) {
+        interpreter::run(&source_code);
     } else {
         println!("Oh noes :'(");
         process::exit(-1);
