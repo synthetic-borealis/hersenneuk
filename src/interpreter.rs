@@ -1,8 +1,12 @@
+//! Brainfuck interpreter functions.
 use std::collections::vec_deque::VecDeque;
 use std::io::{stdin, stdout, Read, Write};
 
 const BLOCK_SIZE: usize = 30000;
 
+/// Runs Brainfuck code.
+///
+/// Note: This function does *NOT* perform any syntax checking.
 pub fn run(code: &str) {
     let instructions: Vec<char> = code.chars().collect();
     let mut cursor: usize = 0;
