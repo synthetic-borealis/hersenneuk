@@ -3,6 +3,7 @@ name = "hersenneuk"
 version = "0.1.0"
 authors = ["Elhanan Flesch"]
 description = "A Brainfuck interpreter (and a library) written in Rust."
+repository = "https://github.com/synthetic-borealis/hersenneuk"
 license = "MIT"
 edition = "2021"
 readme = "README.md"
