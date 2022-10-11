@@ -1,6 +1,8 @@
 [package]
 name = "hersenneuk"
 version = "0.1.0"
+authors = ["Elhanan Flesch"]
+license = "MIT"
 edition = "2021"
 readme = "README.md"
 

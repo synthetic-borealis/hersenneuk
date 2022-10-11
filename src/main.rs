@@ -1,6 +1,8 @@
 use hersenneuk::{code_cleanup, interpreter, syntax_checking};
 use std::{env, fs, process};
 
+const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
+
 fn main() {
     let mut args: Vec<String> = env::args().collect();
     let exe_name = args.remove(0).split('\\').last().unwrap().to_string();
@@ -31,6 +33,6 @@ fn main() {
 }
 
 fn print_usage(exe_name: String) {
-    println!("Hersenneuk v0.0.1");
+    println!("Hersenneuk v{}", PKG_VERSION);
     println!("Usage: {} SOURCE-FILE", exe_name);
 }
