@@ -10,4 +10,4 @@ Run ```hersenneuk [SOURCE FILE]```.
 
 ### As a library
 
-See the documentation.
+Add `hersenneuk` to your crate's dependencies. For other details please see the documentation.
