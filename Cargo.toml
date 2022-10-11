@@ -5,6 +5,8 @@ authors = ["Elhanan Flesch"]
 license = "MIT"
 edition = "2021"
 readme = "README.md"
+keywords = ["brainfuck", "esoteric-languages", "esolang", "bf"]
+categories = ["parser-implementations"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
