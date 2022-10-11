@@ -1,9 +1,11 @@
 use hersenneuk::{code_cleanup, interpreter, syntax_checking};
-use std::{env, fs, process};
+use std::{env, fs, io, process};
 
 const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn main() {
+    let stdout = io::stdout();
+    let stdin = io::stdin();
     let mut args: Vec<String> = env::args().collect();
     let exe_name = args.remove(0).split('\\').last().unwrap().to_string();
     if args.is_empty() {
@@ -29,7 +31,7 @@ fn main() {
         process::exit(-1);
     }
 
-    interpreter::run(&source_code);
+    interpreter::run(&source_code, &stdin, &stdout);
 }
 
 fn print_usage(exe_name: String) {
