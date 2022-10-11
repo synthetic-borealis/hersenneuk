@@ -1,5 +1,5 @@
-![Crates.io](https://img.shields.io/crates/l/hersenneuk)
-![Crates.io](https://img.shields.io/crates/v/hersenneuk)
+[![GitHub](https://img.shields.io/github/license/synthetic-borealis/hersenneuk)](https://github.com/synthetic-borealis/hersenneuk/blob/main/LICENSE)
+[![Crates.io](https://img.shields.io/crates/v/hersenneuk)](https://crates.io/crates/hersenneuk)
 
 # Hersenneuk
 
