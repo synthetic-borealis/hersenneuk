@@ -1,13 +1,13 @@
 //! Brainfuck interpreter functions.
 use std::collections::vec_deque::VecDeque;
-use std::io::{Read, Stdin, Stdout, Write};
+use std::io::{BufReader, BufWriter, Read, Stdin, Stdout, Write};
 
 const BLOCK_SIZE: usize = 30000;
 
 /// Runs Brainfuck code.
 ///
 /// Note: This function does *NOT* perform any syntax checking.
-pub fn run(code: &str, stdin: &Stdin, stdout: &Stdout) {
+pub fn run(code: &str, stdin: &mut BufReader<Stdin>, stdout: &mut BufWriter<Stdout>) {
     let instructions: Vec<char> = code.chars().collect();
     let mut cursor: usize = 0;
     let mut cells: [u8; BLOCK_SIZE] = [0; BLOCK_SIZE];
@@ -72,13 +72,13 @@ pub fn run(code: &str, stdin: &Stdin, stdout: &Stdout) {
     }
 }
 
-fn put_char(c: char, stdout: &Stdout) {
+fn put_char(c: char, stdout: &mut BufWriter<Stdout>) {
     let buf: [u8; 1] = [c as u8];
-    stdout.lock().write_all(&buf).unwrap();
+    stdout.write_all(&buf).unwrap();
 }
 
-fn get_char(stdin: &Stdin) -> char {
+fn get_char(stdin: &mut BufReader<Stdin>) -> char {
     let mut buf: [u8; 1] = [0];
-    stdin.lock().read_exact(&mut buf).unwrap();
+    stdin.read_exact(&mut buf).unwrap();
     buf[0] as char
 }
