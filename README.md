@@ -1,3 +1,6 @@
+![Crates.io](https://img.shields.io/crates/l/hersenneuk)
+![Crates.io](https://img.shields.io/crates/v/hersenneuk)
+
 # Hersenneuk
 
 A Brainfuck interpreter written in Rust.
