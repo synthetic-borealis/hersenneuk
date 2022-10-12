@@ -10,7 +10,7 @@ A Brainfuck interpreter written in Rust.
 
 ### As a standalone program
 
-Run ```hersenneuk [SOURCE FILE]```.
+See ```hersenneuk --help```.
 
 ### As a library
 
