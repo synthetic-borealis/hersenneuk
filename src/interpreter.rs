@@ -7,10 +7,15 @@ const BLOCK_SIZE: usize = 30000;
 /// Runs Brainfuck code.
 ///
 /// Note: This function does *NOT* perform any syntax checking.
-pub fn run(code: &str, stdin: &mut BufReader<Stdin>, stdout: &mut BufWriter<Stdout>) {
+pub fn run(
+    code: &str,
+    stdin: &mut BufReader<Stdin>,
+    stdout: &mut BufWriter<Stdout>,
+    block_size: usize,
+) {
     let instructions: Vec<char> = code.chars().collect();
     let mut cursor: usize = 0;
-    let mut cells: [u8; BLOCK_SIZE] = [0; BLOCK_SIZE];
+    let mut cells: Vec<u8> = vec![0; block_size];
     let mut position: usize = 0;
     let mut loop_positions: VecDeque<usize> = VecDeque::new();
 
