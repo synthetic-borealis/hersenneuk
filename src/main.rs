@@ -1,28 +1,34 @@
+use clap::Parser;
 use hersenneuk::{code_cleanup, interpreter, syntax_checking};
 use std::io::{BufReader, BufWriter};
-use std::{env, fs, io, process};
+use std::{fs, io, process};
 
-const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 const BLOCK_SIZE: usize = 30000;
 const BUF_SIZE: usize = 1024 * 8;
 
+#[derive(Parser, Debug)]
+#[command(author, version, about)]
+struct Args {
+    /// Input source file
+    input_file: String,
+
+    /// Use a dynamic cells block
+    #[arg(short = 'D', long, default_value_t = false)]
+    with_dynamic_block: bool,
+}
+
 fn main() {
-    let mut stdout = BufWriter::with_capacity(BUF_SIZE, io::stdout());
-    let mut stdin = BufReader::with_capacity(BUF_SIZE, io::stdin());
-    let mut args: Vec<String> = env::args().collect();
-    let exe_name = args.remove(0).split('\\').last().unwrap().to_string();
-    if args.is_empty() {
-        print_usage(exe_name);
-        println!("No input provided!");
+    let args = Args::parse();
+
+    if !file_exists(&args.input_file) {
+        println!("Error: can't read file {}", args.input_file);
         process::exit(-1);
     }
-    if args.contains(&"help".to_string()) || args.contains(&"--help".to_string()) {
-        print_usage(exe_name);
-        process::exit(0);
-    }
 
-    let source_file = args.remove(0);
-    let mut source_code = fs::read_to_string(source_file).expect("Could not read input file!");
+    let mut stdout = BufWriter::with_capacity(BUF_SIZE, io::stdout());
+    let mut stdin = BufReader::with_capacity(BUF_SIZE, io::stdin());
+
+    let mut source_code = fs::read_to_string(args.input_file).expect("Could not read input file!");
     source_code = code_cleanup::clean_code(&code_cleanup::strip_comments(&source_code));
 
     if syntax_checking::has_mismatching_loop_bounds(&source_code) {
@@ -34,10 +40,18 @@ fn main() {
         process::exit(-1);
     }
 
-    interpreter::run_with_fixed_block(&source_code, &mut stdin, &mut stdout, BLOCK_SIZE);
+    if args.with_dynamic_block {
+        interpreter::run_with_dynamic_block(&source_code, &mut stdin, &mut stdout);
+    } else {
+        interpreter::run_with_fixed_block(&source_code, &mut stdin, &mut stdout, BLOCK_SIZE);
+    }
 }
 
-fn print_usage(exe_name: String) {
-    println!("Hersenneuk v{}", PKG_VERSION);
-    println!("Usage: {} SOURCE-FILE", exe_name);
+fn file_exists(path: &str) -> bool {
+    let metadata = fs::metadata(path);
+
+    match metadata {
+        Ok(m) => m.is_file(),
+        Err(_e) => false,
+    }
 }

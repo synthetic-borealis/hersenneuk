@@ -2,7 +2,7 @@
 name = "hersenneuk"
 version = "0.1.0"
 authors = ["Elhanan Flesch"]
-description = "A Brainfuck interpreter (and a library) written in Rust."
+description = "A Brainfuck interpreter written in Rust."
 repository = "https://github.com/synthetic-borealis/hersenneuk"
 license = "MIT"
 edition = "2021"
@@ -13,4 +13,5 @@ categories = ["parser-implementations"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+clap = { version = "4.0.13", features = ["derive"] }
 "regex" = "1.6.0"
