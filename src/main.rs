@@ -4,10 +4,11 @@ use std::{env, fs, io, process};
 
 const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 const BLOCK_SIZE: usize = 30000;
+const BUF_SIZE: usize = 1024 * 8;
 
 fn main() {
-    let mut stdout = BufWriter::with_capacity(1024 * 8, io::stdout());
-    let mut stdin = BufReader::with_capacity(1024 * 8, io::stdin());
+    let mut stdout = BufWriter::with_capacity(BUF_SIZE, io::stdout());
+    let mut stdin = BufReader::with_capacity(BUF_SIZE, io::stdin());
     let mut args: Vec<String> = env::args().collect();
     let exe_name = args.remove(0).split('\\').last().unwrap().to_string();
     if args.is_empty() {
@@ -33,7 +34,7 @@ fn main() {
         process::exit(-1);
     }
 
-    interpreter::run(&source_code, &mut stdin, &mut stdout, BLOCK_SIZE);
+    interpreter::run_with_fixed_block(&source_code, &mut stdin, &mut stdout, BLOCK_SIZE);
 }
 
 fn print_usage(exe_name: String) {
