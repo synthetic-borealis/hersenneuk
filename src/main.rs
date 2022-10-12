@@ -27,7 +27,6 @@ fn main() {
 
     let mut stdout = BufWriter::with_capacity(BUF_SIZE, io::stdout());
     let mut stdin = BufReader::with_capacity(BUF_SIZE, io::stdin());
-
     let mut source_code = fs::read_to_string(args.input_file).expect("Could not read input file!");
     source_code = code_cleanup::clean_code(&code_cleanup::strip_comments(&source_code));
 
