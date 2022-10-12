@@ -1,9 +1,10 @@
-name: Test
+name: CI
 
 on:
   push:
     paths:
       - 'src/**/*.rs'
+      - '.github/workflows/ci.yml'
     branches: [ $default-branch, develop ]
   pull_request:
     branches: [ $default-branch ]
@@ -12,7 +13,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
