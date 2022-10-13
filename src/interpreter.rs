@@ -1,14 +1,14 @@
 //! Brainfuck interpreter functions.
 use std::collections::vec_deque::VecDeque;
-use std::io::{BufReader, BufWriter, Read, Stdin, Stdout, Write};
+use std::io::{Read, Write};
 
 /// Runs Brainfuck code with a fixed-size block.
 ///
 /// Note: This function does *NOT* perform any syntax checking.
 pub fn run_with_fixed_block(
     code: &str,
-    stdin: &mut BufReader<Stdin>,
-    stdout: &mut BufWriter<Stdout>,
+    stdin: &mut dyn Read,
+    stdout: &mut dyn Write,
     block_size: usize,
 ) {
     let instructions: Vec<char> = code.chars().collect();
@@ -78,11 +78,7 @@ pub fn run_with_fixed_block(
 /// Runs Brainfuck code with a dynamic-sized block.
 ///
 /// Note: This function does *NOT* perform any syntax checking.
-pub fn run_with_dynamic_block(
-    code: &str,
-    stdin: &mut BufReader<Stdin>,
-    stdout: &mut BufWriter<Stdout>,
-) {
+pub fn run_with_dynamic_block(code: &str, stdin: &mut dyn Read, stdout: &mut dyn Write) {
     let instructions: Vec<char> = code.chars().collect();
     let mut cursor: usize = 0;
     let mut cells: Vec<u8> = vec![0];
@@ -148,12 +144,12 @@ pub fn run_with_dynamic_block(
     }
 }
 
-fn put_char(c: char, stdout: &mut BufWriter<Stdout>) {
+fn put_char(c: char, stdout: &mut dyn Write) {
     let buf: [u8; 1] = [c as u8];
     stdout.write_all(&buf).unwrap();
 }
 
-fn get_char(stdin: &mut BufReader<Stdin>) -> char {
+fn get_char(stdin: &mut dyn Read) -> char {
     let mut buf: [u8; 1] = [0];
     stdin.read_exact(&mut buf).unwrap();
     buf[0] as char
@@ -163,6 +159,7 @@ fn get_char(stdin: &mut BufReader<Stdin>) -> char {
 mod tests {
     use super::*;
     use std::{fs, io};
+    use std::io::{BufReader, BufWriter};
 
     const HELLO_SOURCE_FILE: &str = "test_assets/hello_world.bf";
     // const USER_INPUT_SOURCE_FILE: &str = "test_assets/user_input.bf";
