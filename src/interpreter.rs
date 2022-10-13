@@ -1,14 +1,14 @@
 //! Brainfuck interpreter functions.
 use std::collections::vec_deque::VecDeque;
-use std::io::{BufReader, BufWriter, Read, Stdin, Stdout, Write};
+use std::io::{Read, Write};
 
 /// Runs Brainfuck code with a fixed-size block.
 ///
 /// Note: This function does *NOT* perform any syntax checking.
 pub fn run_with_fixed_block(
     code: &str,
-    stdin: &mut BufReader<Stdin>,
-    stdout: &mut BufWriter<Stdout>,
+    stdin: &mut dyn Read,
+    stdout: &mut dyn Write,
     block_size: usize,
 ) {
     let instructions: Vec<char> = code.chars().collect();
@@ -78,11 +78,7 @@ pub fn run_with_fixed_block(
 /// Runs Brainfuck code with a dynamic-sized block.
 ///
 /// Note: This function does *NOT* perform any syntax checking.
-pub fn run_with_dynamic_block(
-    code: &str,
-    stdin: &mut BufReader<Stdin>,
-    stdout: &mut BufWriter<Stdout>,
-) {
+pub fn run_with_dynamic_block(code: &str, stdin: &mut dyn Read, stdout: &mut dyn Write) {
     let instructions: Vec<char> = code.chars().collect();
     let mut cursor: usize = 0;
     let mut cells: Vec<u8> = vec![0];
@@ -148,12 +144,12 @@ pub fn run_with_dynamic_block(
     }
 }
 
-fn put_char(c: char, stdout: &mut BufWriter<Stdout>) {
+fn put_char(c: char, stdout: &mut dyn Write) {
     let buf: [u8; 1] = [c as u8];
     stdout.write_all(&buf).unwrap();
 }
 
-fn get_char(stdin: &mut BufReader<Stdin>) -> char {
+fn get_char(stdin: &mut dyn Read) -> char {
     let mut buf: [u8; 1] = [0];
     stdin.read_exact(&mut buf).unwrap();
     buf[0] as char
@@ -162,6 +158,7 @@ fn get_char(stdin: &mut BufReader<Stdin>) -> char {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::BufReader;
     use std::{fs, io};
 
     const HELLO_SOURCE_FILE: &str = "test_assets/hello_world.bf";
@@ -172,11 +169,11 @@ mod tests {
     #[test]
     fn hello_world_fixed_block() {
         let test_source = fs::read_to_string(HELLO_SOURCE_FILE).unwrap();
-        let mut stdout = BufWriter::with_capacity(BUF_SIZE, io::stdout());
+        let mut stdout: Vec<u8> = Vec::new();
         let mut stdin = BufReader::with_capacity(BUF_SIZE, io::stdin());
 
         run_with_fixed_block(&test_source, &mut stdin, &mut stdout, BLOCK_SIZE);
-        let stdout = String::from_utf8_lossy(stdout.buffer()).to_string();
+        let stdout = String::from_utf8_lossy(stdout.as_slice()).to_string();
 
         assert_eq!(stdout.trim(), "Hello World!");
     }
@@ -184,11 +181,11 @@ mod tests {
     #[test]
     fn hello_world_dynamic_block() {
         let test_source = fs::read_to_string(HELLO_SOURCE_FILE).unwrap();
-        let mut stdout = BufWriter::with_capacity(BUF_SIZE, io::stdout());
+        let mut stdout: Vec<u8> = Vec::new();
         let mut stdin = BufReader::with_capacity(BUF_SIZE, io::stdin());
 
         run_with_dynamic_block(&test_source, &mut stdin, &mut stdout);
-        let stdout = String::from_utf8_lossy(stdout.buffer()).to_string();
+        let stdout = String::from_utf8_lossy(stdout.as_slice()).to_string();
 
         assert_eq!(stdout.trim(), "Hello World!");
     }
