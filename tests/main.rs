@@ -66,6 +66,7 @@ fn cli_user_input_fixed_block() {
         .spawn()
         .unwrap();
 
+    // ensure child_stdin gets dropped
     {
         let child_stdin = child.stdin.as_mut().unwrap();
         child_stdin.write_all(b"c\n").unwrap();
