@@ -158,8 +158,8 @@ fn get_char(stdin: &mut dyn Read) -> char {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::io::BufReader;
     use std::{fs, io};
-    use std::io::{BufReader, BufWriter};
 
     const HELLO_SOURCE_FILE: &str = "test_assets/hello_world.bf";
     // const USER_INPUT_SOURCE_FILE: &str = "test_assets/user_input.bf";
@@ -169,11 +169,11 @@ mod tests {
     #[test]
     fn hello_world_fixed_block() {
         let test_source = fs::read_to_string(HELLO_SOURCE_FILE).unwrap();
-        let mut stdout = BufWriter::with_capacity(BUF_SIZE, io::stdout());
+        let mut stdout: Vec<u8> = Vec::new();
         let mut stdin = BufReader::with_capacity(BUF_SIZE, io::stdin());
 
         run_with_fixed_block(&test_source, &mut stdin, &mut stdout, BLOCK_SIZE);
-        let stdout = String::from_utf8_lossy(stdout.buffer()).to_string();
+        let stdout = String::from_utf8_lossy(stdout.as_slice()).to_string();
 
         assert_eq!(stdout.trim(), "Hello World!");
     }
@@ -181,11 +181,11 @@ mod tests {
     #[test]
     fn hello_world_dynamic_block() {
         let test_source = fs::read_to_string(HELLO_SOURCE_FILE).unwrap();
-        let mut stdout = BufWriter::with_capacity(BUF_SIZE, io::stdout());
+        let mut stdout: Vec<u8> = Vec::new();
         let mut stdin = BufReader::with_capacity(BUF_SIZE, io::stdin());
 
         run_with_dynamic_block(&test_source, &mut stdin, &mut stdout);
-        let stdout = String::from_utf8_lossy(stdout.buffer()).to_string();
+        let stdout = String::from_utf8_lossy(stdout.as_slice()).to_string();
 
         assert_eq!(stdout.trim(), "Hello World!");
     }
