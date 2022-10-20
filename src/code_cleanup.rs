@@ -1,7 +1,7 @@
 //! Code cleanup functions.
 use regex::Regex;
 
-/// Strips C++-style single-line & multi-line comments comments.
+/// Strips C++-style single-line & multi-line comments.
 pub fn strip_comments(code: &str) -> String {
     let multi_line_comment = Regex::new(r"/[*]([^*]|([*][^/]))*[*]/").unwrap();
     let single_line_comment = Regex::new(r"/{2,}[^\r^\n]*").unwrap();
