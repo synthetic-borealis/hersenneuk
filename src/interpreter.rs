@@ -158,13 +158,32 @@ fn get_char(stdin: &mut dyn Read) -> char {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::io::BufReader;
+    use std::io::{BufReader, Cursor};
     use std::{fs, io};
 
     const HELLO_SOURCE_FILE: &str = "test_assets/hello_world.bf";
-    // const USER_INPUT_SOURCE_FILE: &str = "test_assets/user_input.bf";
+    const USER_INPUT_SOURCE_FILE: &str = "test_assets/user_input.bf";
     const BLOCK_SIZE: usize = 30000;
     const BUF_SIZE: usize = 1024 * 8;
+
+    struct MockInput {
+        buffer: Vec<u8>,
+    }
+
+    impl MockInput {
+        pub fn from_str(s: &str) -> Self {
+            Self {
+                buffer: Vec::from(s),
+            }
+        }
+    }
+
+    impl Read for MockInput {
+        fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+            let mut r = Cursor::new(&self.buffer);
+            r.read(buf)
+        }
+    }
 
     #[test]
     fn hello_world_fixed_block() {
@@ -188,5 +207,17 @@ mod tests {
         let stdout = String::from_utf8_lossy(stdout.as_slice()).to_string();
 
         assert_eq!(stdout.trim(), "Hello World!");
+    }
+
+    #[test]
+    fn user_input() {
+        let test_source = fs::read_to_string(USER_INPUT_SOURCE_FILE).unwrap();
+        let mut stdout: Vec<u8> = Vec::new();
+        let mut stdin = MockInput::from_str("c\n");
+
+        run_with_fixed_block(&test_source, &mut stdin, &mut stdout, BLOCK_SIZE);
+        let stdout = String::from_utf8_lossy(stdout.as_slice()).to_string();
+
+        assert_eq!(stdout.trim(), "c");
     }
 }
