@@ -1,10 +1,14 @@
 //! Code cleanup functions.
 use regex::Regex;
 
-/// Strips C++-style single-line comments.
+/// Strips C++-style single-line & multi-line comments comments.
 pub fn strip_comments(code: &str) -> String {
-    let re = Regex::new(r"/{2,}[^\r^\n]*").unwrap();
-    re.replace_all(code, "").to_string()
+    let multi_line_comment = Regex::new(r"/[*]([^*]|([*][^/]))*[*]/").unwrap();
+    let single_line_comment = Regex::new(r"/{2,}[^\r^\n]*").unwrap();
+    let first_pass = multi_line_comment.replace_all(code, "").into_owned();
+    single_line_comment
+        .replace_all(&first_pass, "")
+        .into_owned()
 }
 
 /// Removes characters that aren't valid Brainfuck instructions.

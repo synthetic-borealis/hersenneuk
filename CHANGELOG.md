@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.2.2
+- 20/10/2022 - Added support for C/C++ style multi-line comments.
+
 ## v0.2.1
 
 - 13/10/2022 - `run_*`, `get_char` & `put_char` take anything that implements `Read` or `Write` traits.
