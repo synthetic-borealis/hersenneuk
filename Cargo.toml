@@ -1,6 +1,6 @@
 [package]
 name = "hersenneuk"
-version = "0.2.2"
+version = "0.2.3"
 authors = ["Elhanan Flesch"]
 description = "A Brainfuck interpreter written in Rust."
 repository = "https://github.com/synthetic-borealis/hersenneuk"
