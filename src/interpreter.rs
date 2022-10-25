@@ -7,8 +7,8 @@ use std::io::{Read, Write};
 /// Note: This function does *NOT* perform any syntax checking.
 pub fn run_with_fixed_block(
     code: &str,
-    stdin: &mut dyn Read,
-    stdout: &mut dyn Write,
+    stdin: &mut impl Read,
+    stdout: &mut impl Write,
     block_size: usize,
 ) {
     let instructions: Vec<char> = code.chars().collect();
@@ -78,7 +78,7 @@ pub fn run_with_fixed_block(
 /// Runs Brainfuck code with a dynamic-sized block.
 ///
 /// Note: This function does *NOT* perform any syntax checking.
-pub fn run_with_dynamic_block(code: &str, stdin: &mut dyn Read, stdout: &mut dyn Write) {
+pub fn run_with_dynamic_block(code: &str, stdin: &mut impl Read, stdout: &mut impl Write) {
     let instructions: Vec<char> = code.chars().collect();
     let mut cursor: usize = 0;
     let mut cells: Vec<u8> = vec![0];
@@ -144,12 +144,12 @@ pub fn run_with_dynamic_block(code: &str, stdin: &mut dyn Read, stdout: &mut dyn
     }
 }
 
-fn put_char(c: char, stdout: &mut dyn Write) {
+fn put_char(c: char, stdout: &mut impl Write) {
     let buf: [u8; 1] = [c as u8];
     stdout.write_all(&buf).unwrap();
 }
 
-fn get_char(stdin: &mut dyn Read) -> char {
+fn get_char(stdin: &mut impl Read) -> char {
     let mut buf: [u8; 1] = [0];
     stdin.read_exact(&mut buf).unwrap();
     buf[0] as char
